@@ -12,8 +12,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import axios from 'axios';
-
-const API_URL = 'http://192.168.20.86:8080/tasks';
+import {API_URL} from '@env';
 
 export default function App() {
   const [tasks, setTasks] = useState([]);
@@ -24,7 +23,7 @@ export default function App() {
   const fetchTasks = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(API_URL);
+      const response = await axios.get(API_URL + '/tasks');
       setTasks(response.data);
     } catch (err) {
       Alert.alert('Error', 'No se pudieron obtener las tareas');
@@ -36,7 +35,7 @@ export default function App() {
   const addTask = async () => {
     if (!title.trim()) return;
     try {
-      await axios.post(API_URL, {
+      await axios.post(API_URL + '/tasks', {
         title,
         description: '',
         isDone: false,
@@ -50,7 +49,7 @@ export default function App() {
 
   const toggleDone = async task => {
     try {
-      await axios.put(`${API_URL}/${task.id}`, {
+      await axios.put(`${API_URL + '/tasks'}/${task.id}`, {
         ...task,
         isDone: !task.isDone,
       });
@@ -63,7 +62,7 @@ export default function App() {
 
   const deleteTask = async id => {
     try {
-      await axios.delete(`${API_URL}/${id}`);
+      await axios.delete(`${API_URL + '/tasks'}/${id}`);
       fetchTasks();
     } catch (err) {
       Alert.alert('Error', 'No se pudo eliminar la tarea');
